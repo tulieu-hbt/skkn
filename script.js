@@ -72,6 +72,33 @@ async function predict() {
     alert("Đã xảy ra lỗi khi nhận dạng. Vui lòng thử lại.");
   }
 }
+// Thêm hàm init()
+async function init() {
+  try {
+    // const modelURL = URL + "model.json"; // Comment hoặc xóa dòng này
+    // const metadataURL = URL + "metadata.json"; // Comment hoặc xóa dòng này
 
+    // Load mô hình MobileNet
+    model = await mobilenet.load();
+
+    maxPredictions = model.getTotalClasses(); // MobileNet có 1000 classes
+
+    // Khởi tạo webcam
+    const flip = true; // Lật ảnh từ webcam
+    webcam = new tmImage.Webcam(640, 480, flip); // width, height, flip
+    await webcam.setup(); // Yêu cầu truy cập webcam
+
+    // Lấy các element HTML
+    document.getElementById("startButton").addEventListener("click", start);
+    labelContainer = document.getElementById("label-container");
+    for (let i = 0; i < maxPredictions; i++) { 
+      labelContainer.appendChild(document.createElement("div"));   
+
+    }
+  } catch (error) {
+    console.error("Lỗi khởi tạo:", error);
+    alert("Đã xảy ra lỗi khi khởi tạo ứng dụng. Vui lòng thử lại sau.");
+  }
+}
 // Khởi tạo
 init();
