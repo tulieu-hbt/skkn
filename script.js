@@ -51,6 +51,24 @@ async function predict() {
 
   }
 }
+//Thêm mới:
+async function start() {
+  // 1. Ẩn nút "Bắt đầu"
+  document.getElementById("startButton").style.display = "none"; 
 
+  // 2. Hiển thị video webcam
+  await webcam.play();
+  document.getElementById("webcam").style.display = "block"; 
+
+  // 3. Bắt đầu nhận dạng và hiển thị kết quả
+  window.requestAnimationFrame(loop);
+}
+
+// Vòng lặp cập nhật webcam và nhận dạng
+async function loop() {
+  webcam.update(); // Cập nhật khung hình webcam
+  await predict(); // Gọi hàm nhận dạng
+  window.requestAnimationFrame(loop); // Lặp lại vòng lặp
+}
 // Khởi tạo
 init();
