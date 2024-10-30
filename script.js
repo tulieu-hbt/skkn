@@ -84,7 +84,8 @@ async function loop() {
   requestAnimationFrame(loop); // Lặp lại vòng lặp
 }
 
-// Hàm nhận dạng
+// Hàm nhận dạng củ để dùng lại
+/*
 async function predict() {
   try {
     const prediction = await model.predict(webcam.canvas);
@@ -100,6 +101,31 @@ async function predict() {
     alert("Đã xảy ra lỗi khi nhận dạng. Vui lòng thử lại.");
   }
 }
+*/
+// Hàm nhận dạng mới:
+// Hàm nhận dạng
+async function predict() {
+  try {
+    const prediction = await model.predict(webcam.canvas);
 
+    // Hiển thị 5 kết quả có xác suất cao nhất
+    prediction.sort((a, b) => b.probability - a.probability); // Sắp xếp theo xác suất giảm dần
+    for (let i = 0; i < 5; i++) { 
+      const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+      if (labelContainer.childNodes[i]) {
+        labelContainer.childNodes[i].innerHTML = classPrediction;
+      } else {
+        // Nếu chưa có đủ phần tử con, tạo thêm
+        const div = document.createElement("div");
+        div.innerHTML = classPrediction;
+        labelContainer.appendChild(div);
+      }
+    }
+
+  } catch (error) {
+    console.error("Lỗi khi nhận dạng:", error);
+    alert("Đã xảy ra lỗi khi nhận dạng. Vui lòng thử lại.");
+  }
+}
 // Khởi tạo
 init();
