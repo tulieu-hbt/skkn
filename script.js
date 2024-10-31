@@ -54,6 +54,7 @@ async function init() {
       labelContainer.appendChild(document.createElement("div"));   
 
     }
+    console.log("Khởi tạo webcam:", webcam);
   } catch (error) {
     console.error("Lỗi khởi tạo:", error);
     alert("Đã xảy ra lỗi khi khởi tạo ứng dụng. Vui lòng thử lại sau.");
