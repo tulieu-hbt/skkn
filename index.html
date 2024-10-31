@@ -1,20 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="Ứng dụng web phân loại nông sản bằng Teachable Machine và TensorFlow.js">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phân biệt nông sản</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/teachablemachine@latest"></script>   
-
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest"></script>
-  <link rel="stylesheet" href="style.css">
+  <title>MobileNet Webcam Recognition</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
 </head>
 <body>
-  <h1>Phân biệt nông sản</h1>
   <button id="startButton">Bắt đầu</button>
-  <video id="webcam" autoplay width="640" height="480" style="display: none;"></video>
+  <div id="webcam-container"></div>
   <div id="label-container"></div>
   <script src="script.js"></script>
 </body>
