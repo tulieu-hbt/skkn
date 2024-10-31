@@ -10,16 +10,12 @@ async function init() {
         await tf.ready(); // Đảm bảo toàn bộ TensorFlow.js đã sẵn sàng
         console.log("Backend 'webgl' đã sẵn sàng và TensorFlow.js đã sẵn sàng.");
 
-        // Tải mô hình MobileNet
-        net = await mobilenet.load();
-        console.log("MobileNet đã được tải thành công.");
+        // Tải mô hình MobileNet qua ml5.js
+        net = ml5.featureExtractor('MobileNet', modelLoaded);
+        knnClassifier = net.classification();
 
-        // Kiểm tra và khởi tạo KNN Classifier từ ml5
-        if (ml5.KNNClassifier) {
-            knnClassifier = ml5.KNNClassifier();
-            console.log("KNN Classifier đã được khởi tạo.");
-        } else {
-            throw new Error("ml5.KNNClassifier không khả dụng, kiểm tra lại thư viện ml5.js");
+        function modelLoaded() {
+            console.log("MobileNet đã được tải thành công.");
         }
 
         // Khởi tạo webcam
@@ -90,4 +86,4 @@ document.getElementById("startButton").addEventListener("click", () => {
 // Gán sự kiện cho các nút để thêm dữ liệu huấn luyện cho từng nhãn
 document.getElementById("btn-apple").addEventListener("click", () => addExample("Apple"));
 document.getElementById("btn-banana").addEventListener("click", () => addExample("Banana"));
-document.getElementById("btn-orange").addEventListener("click", () => addExample("Orange"));
+document.getElementById("btn-orange").addEventListener("click", () =
