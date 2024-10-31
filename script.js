@@ -10,6 +10,7 @@ async function init() {
 
     // Tạo KNN Classifier
     knnClassifier = ml5.KNNClassifier();
+    console.log("Đã tạo KNN Classifier.");
 
     // Khởi tạo webcam
     webcamElement = document.createElement("video");
@@ -34,10 +35,11 @@ async function init() {
 // Hàm thêm dữ liệu huấn luyện cho từng nhãn
 async function addExample(label) {
     try {
-        if (!webcamElement) {
-            throw new Error("Webcam chưa sẵn sàng");
+        if (!webcamElement || !net || !knnClassifier) {
+            throw new Error("Webcam hoặc mô hình chưa sẵn sàng");
         }
 
+        // Tạo ra một activation từ mô hình MobileNet dựa trên khung hình từ webcam
         const activation = net.infer(webcamElement, true);
         knnClassifier.addExample(activation, label);
         console.log(`Đã thêm dữ liệu cho nhãn: ${label}`);
