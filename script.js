@@ -64,27 +64,29 @@ async function loop() {
 // Hàm nhận dạng
 async function predict() {
     try {
-        // Chuyển đổi từ webcam thành tensor
-        const image = tf.browser.fromPixels(webcam);
-        const predictions = await model.classify(image); // Dự đoán từ ảnh
+        // Kiểm tra nếu webcam có kích thước hợp lệ
+        if (webcam.videoWidth > 0 && webcam.videoHeight > 0) {
+            const image = tf.browser.fromPixels(webcam);
+            const predictions = await model.classify(image); // Dự đoán từ ảnh
 
-        // Xóa nội dung cũ
-        labelContainer.innerHTML = "";
+            // Xóa nội dung cũ
+            labelContainer.innerHTML = "";
 
-        // Hiển thị kết quả dự đoán
-        predictions.forEach((prediction) => {
-            const classPrediction = `${prediction.className}: ${(
-                prediction.probability * 100
-            ).toFixed(2)}%`;
-            const div = document.createElement("div");
-            div.innerText = classPrediction;
-            labelContainer.appendChild(div);
-        });
+            // Hiển thị kết quả dự đoán
+            predictions.forEach((prediction) => {
+                const classPrediction = `${prediction.className}: ${(
+                    prediction.probability * 100
+                ).toFixed(2)}%`;
+                const div = document.createElement("div");
+                div.innerText = classPrediction;
+                labelContainer.appendChild(div);
+            });
 
-        console.log("Kết quả dự đoán:", predictions);
+            console.log("Kết quả dự đoán:", predictions);
 
-        // Giải phóng bộ nhớ sau khi hoàn thành dự đoán
-        image.dispose();
+            // Giải phóng bộ nhớ sau khi hoàn thành dự đoán
+            image.dispose();
+        }
     } catch (error) {
         console.error("Lỗi khi nhận dạng:", error);
         alert("Đã xảy ra lỗi khi nhận dạng: " + error.message);
