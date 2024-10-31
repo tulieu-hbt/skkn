@@ -1,6 +1,6 @@
-// Import các thư viện cần thiết
 let net, knnClassifier, webcamElement;
 
+// Hàm khởi tạo ứng dụng
 async function init() {
   console.log("Bắt đầu khởi tạo mô hình...");
 
@@ -9,8 +9,8 @@ async function init() {
   console.log("Đã tải xong MobileNet.");
 
   // Tạo KNN Classifier
-  knnClassifier = knnClassifier || ml5.KNNClassifier();
-  
+  knnClassifier = ml5.KNNClassifier();
+
   // Khởi tạo webcam
   webcamElement = document.createElement("video");
   webcamElement.setAttribute("autoplay", "");
@@ -45,20 +45,23 @@ async function startPredictionLoop() {
   while (true) {
     if (knnClassifier.getNumClasses() > 0) {
       const activation = net.infer(webcamElement, "conv_preds");
-      const result = await knnClassifier.predictClass(activation);
+      const result = await knnClassifier.classify(activation);
 
       document.getElementById("label-container").innerText = `
-        Nhãn dự đoán: ${result.label} với độ chính xác: ${(result.confidences[result.label] * 100).toFixed(2)}%
+        Nhãn dự đoán: ${result.label} với độ chính xác: ${(result.confidencesByLabel[result.label] * 100).toFixed(2)}%
       `;
     }
     await tf.nextFrame();
   }
 }
 
+// Khởi động ứng dụng khi nhấn nút "Bắt đầu"
+document.getElementById("startButton").addEventListener("click", () => {
+  init();
+  document.getElementById("startButton").style.display = "none";
+});
+
 // Gán sự kiện cho các nút để thêm dữ liệu huấn luyện cho từng nhãn
 document.getElementById("btn-apple").addEventListener("click", () => addExample("Apple"));
 document.getElementById("btn-banana").addEventListener("click", () => addExample("Banana"));
 document.getElementById("btn-orange").addEventListener("click", () => addExample("Orange"));
-
-// Khởi tạo mô hình và webcam
-init();
