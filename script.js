@@ -12,7 +12,6 @@ async function init() {
 
         // Khởi tạo webcam
         console.log("Đang khởi tạo webcam...");
-        const flip = true; // Lật ảnh từ webcam
         webcam = document.createElement("video");
         webcam.setAttribute("autoplay", "");
         webcam.setAttribute("playsinline", "");
@@ -21,15 +20,16 @@ async function init() {
         document.getElementById("webcam-container").appendChild(webcam);
 
         // Yêu cầu truy cập webcam
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            webcam.srcObject = stream;
-            await new Promise((resolve) => (webcam.onloadedmetadata = resolve));
-            console.log("Webcam đã sẵn sàng.");
-        } else {
-            alert("Trình duyệt không hỗ trợ webcam");
-            return;
-        }
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        webcam.srcObject = stream;
+
+        // Chờ webcam sẵn sàng
+        await new Promise((resolve) => {
+            webcam.onloadedmetadata = () => {
+                webcam.play();
+                resolve();
+            };
+        });
 
         // Tạo container để hiển thị nhãn dự đoán
         labelContainer = document.getElementById("label-container");
@@ -54,7 +54,6 @@ function start() {
 
 // Vòng lặp cập nhật webcam và nhận dạng
 async function loop() {
-    // Đảm bảo webcam đã sẵn sàng
     if (webcam && webcam.readyState === 4) {
         await predict(); // Gọi hàm nhận dạng
     }
@@ -64,22 +63,27 @@ async function loop() {
 // Hàm nhận dạng
 async function predict() {
     try {
-        const predictions = await model.classify(webcam); // Dự đoán từ webcam
+        // Kiểm tra nếu webcam đã có videoWidth
+        if (webcam.videoWidth > 0 && webcam.videoHeight > 0) {
+            const predictions = await model.classify(webcam); // Dự đoán từ webcam
 
-        // Xóa nội dung cũ
-        labelContainer.innerHTML = "";
+            // Xóa nội dung cũ
+            labelContainer.innerHTML = "";
 
-        // Hiển thị kết quả dự đoán
-        predictions.forEach((prediction) => {
-            const classPrediction = `${prediction.className}: ${(
-                prediction.probability * 100
-            ).toFixed(2)}%`;
-            const div = document.createElement("div");
-            div.innerText = classPrediction;
-            labelContainer.appendChild(div);
-        });
+            // Hiển thị kết quả dự đoán
+            predictions.forEach((prediction) => {
+                const classPrediction = `${prediction.className}: ${(
+                    prediction.probability * 100
+                ).toFixed(2)}%`;
+                const div = document.createElement("div");
+                div.innerText = classPrediction;
+                labelContainer.appendChild(div);
+            });
 
-        console.log("Kết quả dự đoán:", predictions);
+            console.log("Kết quả dự đoán:", predictions);
+        } else {
+            console.warn("Webcam chưa sẵn sàng.");
+        }
     } catch (error) {
         console.error("Lỗi khi nhận dạng:", error);
         alert("Đã xảy ra lỗi khi nhận dạng: " + error.message);
