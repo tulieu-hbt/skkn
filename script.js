@@ -1,6 +1,6 @@
 let featureExtractor, knnClassifier, webcamElement;
 
-// Hàm chờ cho ml5.js sẵn sàng
+// Hàm chờ ml5.js sẵn sàng
 function waitForMl5() {
     return new Promise((resolve, reject) => {
         const checkMl5 = () => {
@@ -31,7 +31,7 @@ async function init() {
         featureExtractor = ml5.featureExtractor('MobileNet', () => {
             console.log("MobileNet đã được tải thành công.");
         });
-        knnClassifier = ml5.KNNClassifier(); // Tạo KNN Classifier mới
+        knnClassifier = featureExtractor.classification();
 
         // Khởi tạo webcam
         webcamElement = document.createElement("video");
