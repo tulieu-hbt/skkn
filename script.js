@@ -5,9 +5,10 @@ async function init() {
   try {
     console.log("Khởi tạo TensorFlow và các thành phần...");
 
-    // Đảm bảo TensorFlow.js đã sẵn sàng
+    // Đảm bảo TensorFlow.js đã sẵn sàng và thiết lập backend CPU
     await tf.ready();
-    console.log("TensorFlow.js đã sẵn sàng.");
+    await tf.setBackend('cpu'); // Hoặc 'webgl' nếu 'cpu' không khả dụng
+    console.log("TensorFlow.js đã sẵn sàng với backend:", tf.getBackend());
 
     // Tải mô hình MobileNet
     net = await mobilenet.load();
