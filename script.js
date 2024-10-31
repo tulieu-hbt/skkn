@@ -1,19 +1,20 @@
-let net, knnClassifier, webcamElement;
+let featureExtractor, knnClassifier, webcamElement;
 
 // Hàm khởi tạo ứng dụng
 async function init() {
     try {
         console.log("Khởi tạo TensorFlow và các thành phần...");
 
-        // Buộc sử dụng backend 'webgl' và chờ cho backend được thiết lập hoàn toàn
+        // Đảm bảo TensorFlow.js đã sẵn sàng
         await tf.setBackend('webgl');
-        await tf.ready(); // Đảm bảo toàn bộ TensorFlow.js đã sẵn sàng
-        console.log("Backend 'webgl' đã sẵn sàng và TensorFlow.js đã sẵn sàng.");
+        await tf.ready();
+        console.log("TensorFlow.js đã sẵn sàng.");
 
-        // Tải mô hình MobileNet qua ml5.js
-        net = ml5.featureExtractor('MobileNet', modelLoaded);
-        knnClassifier = net.classification();
+        // Sử dụng ml5.featureExtractor để tải MobileNet
+        featureExtractor = ml5.featureExtractor('MobileNet', modelLoaded);
+        knnClassifier = featureExtractor.classification();
 
+        // Hàm được gọi khi mô hình MobileNet đã tải xong
         function modelLoaded() {
             console.log("MobileNet đã được tải thành công.");
         }
@@ -30,7 +31,12 @@ async function init() {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             webcamElement.srcObject = stream;
-            await new Promise((resolve) => (webcamElement.onloadedmetadata = resolve));
+            await new Promise((resolve) => {
+                webcamElement.onloadedmetadata = () => {
+                    resolve();
+                    webcamElement.play();
+                };
+            });
             console.log("Webcam đã sẵn sàng.");
         } else {
             alert("Trình duyệt không hỗ trợ webcam");
@@ -51,9 +57,8 @@ async function addExample(label) {
         if (!webcamElement) {
             throw new Error("Webcam chưa sẵn sàng");
         }
-        
-        const activation = net.infer(webcamElement, true);
-        knnClassifier.addExample(activation, label);
+
+        knnClassifier.addImage(webcamElement, label);
         console.log(`Đã thêm dữ liệu cho nhãn: ${label}`);
     } catch (error) {
         console.error("Lỗi khi thêm dữ liệu:", error);
@@ -65,13 +70,17 @@ async function addExample(label) {
 async function startPredictionLoop() {
     while (true) {
         if (knnClassifier.getNumClasses() > 0) {
-            const activation = net.infer(webcamElement, "conv_preds");
-            const result = await knnClassifier.classify(activation);
+            knnClassifier.classify(webcamElement, (error, result) => {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
 
-            // Hiển thị kết quả dự đoán
-            document.getElementById("label-container").innerText = `
-                Nhãn dự đoán: ${result.label} với độ chính xác: ${(result.confidencesByLabel[result.label] * 100).toFixed(2)}%
-            `;
+                // Hiển thị kết quả dự đoán
+                document.getElementById("label-container").innerText = `
+                    Nhãn dự đoán: ${result.label} với độ chính xác: ${(result.confidencesByLabel[result.label] * 100).toFixed(2)}%
+                `;
+            });
         }
         await new Promise((resolve) => setTimeout(resolve, 100)); // Đợi một thời gian ngắn trước khi lặp lại
     }
@@ -86,4 +95,4 @@ document.getElementById("startButton").addEventListener("click", () => {
 // Gán sự kiện cho các nút để thêm dữ liệu huấn luyện cho từng nhãn
 document.getElementById("btn-apple").addEventListener("click", () => addExample("Apple"));
 document.getElementById("btn-banana").addEventListener("click", () => addExample("Banana"));
-document.getElementById("btn-orange").addEventListener("click", () =
+document.getElementById("btn-orange").addEventListener("click", () => addExample("Orange"));
