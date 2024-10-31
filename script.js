@@ -1,11 +1,17 @@
 let featureExtractor, knnClassifier, webcamElement;
 
 // Hàm chờ ml5.js sẵn sàng
-async function waitForMl5() {
-    if (typeof ml5 === 'undefined') {
-        throw new Error("ml5 library chưa được tải. Vui lòng kiểm tra liên kết ml5.js trong HTML.");
-    }
-    console.log("ml5 đã sẵn sàng.");
+function waitForMl5() {
+    return new Promise((resolve, reject) => {
+        const checkMl5 = () => {
+            if (typeof ml5 !== 'undefined') {
+                resolve();
+            } else {
+                setTimeout(checkMl5, 100);
+            }
+        };
+        checkMl5();
+    });
 }
 
 // Hàm khởi tạo ứng dụng
@@ -23,12 +29,21 @@ async function init() {
 
         // Sử dụng ml5.featureExtractor để tải MobileNet
         featureExtractor = ml5.featureExtractor('MobileNet', modelLoaded);
-        knnClassifier = ml5.KNNClassifier(); // Sử dụng KNN Classifier mới từ ml5
+        knnClassifier = ml5.KNNClassifier(); // Tạo KNN Classifier mới
 
         function modelLoaded() {
             console.log("MobileNet đã được tải thành công.");
+            startWebcam(); // Khởi tạo webcam sau khi model đã tải
         }
+    } catch (error) {
+        console.error("Lỗi khi khởi tạo ứng dụng:", error);
+        alert("Đã xảy ra lỗi khi khởi tạo ứng dụng: " + error.message);
+    }
+}
 
+// Hàm khởi tạo webcam
+async function startWebcam() {
+    try {
         // Khởi tạo webcam
         webcamElement = document.createElement("video");
         webcamElement.setAttribute("autoplay", "");
@@ -49,21 +64,22 @@ async function init() {
             });
             console.log("Webcam đã sẵn sàng.");
         } else {
-            throw new Error("Trình duyệt không hỗ trợ webcam");
+            alert("Trình duyệt không hỗ trợ webcam");
+            return;
         }
 
         // Bắt đầu vòng lặp dự đoán sau khi khởi tạo thành công
         startPredictionLoop();
     } catch (error) {
-        console.error("Lỗi khi khởi tạo ứng dụng:", error);
-        alert("Đã xảy ra lỗi khi khởi tạo ứng dụng: " + error.message);
+        console.error("Lỗi khi khởi chạy webcam:", error);
+        alert("Đã xảy ra lỗi khi khởi chạy webcam: " + error.message);
     }
 }
 
 // Hàm thêm dữ liệu huấn luyện cho từng nhãn
 async function addExample(label) {
     try {
-        if (!webcamElement) {
+        if (!webcamElement || webcamElement.readyState !== 4) {
             throw new Error("Webcam chưa sẵn sàng");
         }
 
@@ -111,4 +127,3 @@ document.getElementById("startButton").addEventListener("click", async () => {
 document.getElementById("btn-apple").addEventListener("click", () => addExample("Apple"));
 document.getElementById("btn-banana").addEventListener("click", () => addExample("Banana"));
 document.getElementById("btn-orange").addEventListener("click", () => addExample("Orange"));
-
