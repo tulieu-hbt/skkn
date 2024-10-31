@@ -2,42 +2,53 @@ let net, knnClassifier, webcamElement;
 
 // Hàm khởi tạo ứng dụng
 async function init() {
-  console.log("Bắt đầu khởi tạo mô hình...");
+  try {
+    console.log("Bắt đầu khởi tạo mô hình...");
 
-  // Tải mô hình MobileNet
-  net = await mobilenet.load();
-  console.log("Đã tải xong MobileNet.");
+    // Tải mô hình MobileNet
+    net = await mobilenet.load();
+    console.log("Đã tải xong MobileNet.");
 
-  // Tạo KNN Classifier
-  knnClassifier = ml5.KNNClassifier();
+    // Tạo KNN Classifier
+    knnClassifier = ml5.KNNClassifier();
 
-  // Khởi tạo webcam
-  webcamElement = document.createElement("video");
-  webcamElement.setAttribute("autoplay", "");
-  webcamElement.setAttribute("playsinline", "");
-  webcamElement.setAttribute("width", 640);
-  webcamElement.setAttribute("height", 480);
-  document.getElementById("webcam-container").appendChild(webcamElement);
+    // Khởi tạo webcam
+    webcamElement = document.createElement("video");
+    webcamElement.setAttribute("autoplay", "");
+    webcamElement.setAttribute("playsinline", "");
+    webcamElement.setAttribute("width", 640);
+    webcamElement.setAttribute("height", 480);
+    document.getElementById("webcam-container").appendChild(webcamElement);
 
-  // Khởi chạy webcam
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    webcamElement.srcObject = stream;
-    await new Promise((resolve) => (webcamElement.onloadedmetadata = resolve));
-  } else {
-    alert("Trình duyệt không hỗ trợ webcam");
-    return;
+    // Khởi chạy webcam
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      webcamElement.srcObject = stream;
+      await new Promise((resolve) => (webcamElement.onloadedmetadata = resolve));
+      console.log("Webcam đã sẵn sàng.");
+    } else {
+      alert("Trình duyệt không hỗ trợ webcam");
+      return;
+    }
+
+    // Bắt đầu nhận diện sau khi khởi tạo thành công
+    startPredictionLoop();
+  } catch (error) {
+    console.error("Lỗi khi khởi tạo:", error);
+    alert("Lỗi khi khởi tạo ứng dụng: " + error.message);
   }
-
-  // Bắt đầu nhận diện sau khi khởi tạo thành công
-  startPredictionLoop();
 }
 
 // Hàm thêm dữ liệu huấn luyện cho từng nhãn
 async function addExample(label) {
-  const activation = net.infer(webcamElement, true);
-  knnClassifier.addExample(activation, label);
-  console.log(`Đã thêm dữ liệu cho nhãn: ${label}`);
+  try {
+    const activation = net.infer(webcamElement, true);
+    knnClassifier.addExample(activation, label);
+    console.log(`Đã thêm dữ liệu cho nhãn: ${label}`);
+  } catch (error) {
+    console.error("Lỗi khi thêm dữ liệu:", error);
+    alert("Lỗi khi thêm dữ liệu huấn luyện: " + error.message);
+  }
 }
 
 // Hàm vòng lặp để thực hiện nhận diện liên tục
@@ -47,6 +58,7 @@ async function startPredictionLoop() {
       const activation = net.infer(webcamElement, "conv_preds");
       const result = await knnClassifier.classify(activation);
 
+      // Hiển thị kết quả dự đoán
       document.getElementById("label-container").innerText = `
         Nhãn dự đoán: ${result.label} với độ chính xác: ${(result.confidencesByLabel[result.label] * 100).toFixed(2)}%
       `;
