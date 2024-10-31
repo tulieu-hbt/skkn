@@ -16,13 +16,10 @@ async function init() {
         console.log("TensorFlow.js đã sẵn sàng.");
 
         // Sử dụng ml5.featureExtractor để tải MobileNet
-        featureExtractor = ml5.featureExtractor('MobileNet', modelLoaded);
-        knnClassifier = ml5.KNNClassifier();
-
-        // Hàm được gọi khi mô hình MobileNet đã tải xong
-        function modelLoaded() {
+        featureExtractor = ml5.featureExtractor('MobileNet', () => {
             console.log("MobileNet đã được tải thành công.");
-        }
+        });
+        knnClassifier = featureExtractor.classification();
 
         // Khởi tạo webcam
         webcamElement = document.createElement("video");
@@ -38,8 +35,8 @@ async function init() {
             webcamElement.srcObject = stream;
             await new Promise((resolve) => {
                 webcamElement.onloadedmetadata = () => {
-                    resolve();
                     webcamElement.play();
+                    resolve();
                 };
             });
             console.log("Webcam đã sẵn sàng.");
@@ -94,8 +91,8 @@ async function startPredictionLoop() {
 }
 
 // Khởi động ứng dụng khi nhấn nút "Bắt đầu"
-document.getElementById("startButton").addEventListener("click", () => {
-    init();
+document.getElementById("startButton").addEventListener("click", async () => {
+    await init();
     document.getElementById("startButton").style.display = "none";
 });
 
