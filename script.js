@@ -56,7 +56,7 @@ async function init() {
     console.log("Khởi tạo webcam:", webcam);
   } catch (error) {
     console.error("Lỗi khởi tạo:", error);
-    alert("Đã xảy ra lỗi khi khởi tạo ứng dụng. Vui lòng thử lại sau.");
+    alert("Đã xảy ra lỗi khi khởi tạo ứng dụng: " + error.message); 
   }
 }
 // Hàm bắt đầu nhận dạng
@@ -110,22 +110,16 @@ async function predict() {
     const prediction = await model.predict(webcam.canvas);
 
     // Hiển thị 5 kết quả có xác suất cao nhất
-    prediction.sort((a, b) => b.probability - a.probability); // Sắp xếp theo xác suất giảm dần
+    prediction.sort((a, b) => b.probability - a.probability); 
     for (let i = 0; i < 5; i++) { 
       const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-      if (labelContainer.childNodes[i]) {
-        labelContainer.childNodes[i].innerHTML = classPrediction;
-      } else {
-        // Nếu chưa có đủ phần tử con, tạo thêm
-        const div = document.createElement("div");
-        div.innerHTML = classPrediction;
-        labelContainer.appendChild(div);
-      }
+      labelContainer.childNodes[i].innerHTML = classPrediction;   
+ // Cập nhật nội dung của 5 div đầu tiên
     }
-     console.log("Kết quả dự đoán:", prediction);
+    console.log("Kết quả dự đoán:", prediction);
   } catch (error) {
     console.error("Lỗi khi nhận dạng:", error);
-    alert("Đã xảy ra lỗi khi nhận dạng. Vui lòng thử lại.");
+    alert("Đã xảy ra lỗi khi nhận dạng: " + error.message);
   }
 }
 // Khởi tạo
