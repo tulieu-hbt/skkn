@@ -46,7 +46,7 @@ async function init() {
     const flip = true; // Lật ảnh từ webcam
     webcam = new tmImage.Webcam(640, 480, flip); // width, height, flip
     await webcam.setup(); // Yêu cầu truy cập webcam
-
+    console.log(webcam);
     // Lấy các element HTML
     document.getElementById("startButton").addEventListener("click", start);
     labelContainer = document.getElementById("label-container");
