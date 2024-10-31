@@ -124,3 +124,6 @@ async function predict() {
 }
 // Khởi tạo
 init();
+start();
+loop();
+predict();
