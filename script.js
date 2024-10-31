@@ -5,14 +5,19 @@ async function init() {
     try {
         console.log("Khởi tạo TensorFlow và các thành phần...");
 
-        // Đảm bảo TensorFlow.js đã sẵn sàng
+        // Đảm bảo thư viện ml5 đã sẵn sàng
+        if (typeof ml5 === 'undefined') {
+            throw new Error("ml5 library is not loaded. Please make sure to include the ml5.js library in your HTML.");
+        }
+
+        // Thiết lập backend TensorFlow và đảm bảo sẵn sàng
         await tf.setBackend('webgl');
         await tf.ready();
         console.log("TensorFlow.js đã sẵn sàng.");
 
         // Sử dụng ml5.featureExtractor để tải MobileNet
         featureExtractor = ml5.featureExtractor('MobileNet', modelLoaded);
-        knnClassifier = featureExtractor.classification();
+        knnClassifier = ml5.KNNClassifier();
 
         // Hàm được gọi khi mô hình MobileNet đã tải xong
         function modelLoaded() {
@@ -58,7 +63,8 @@ async function addExample(label) {
             throw new Error("Webcam chưa sẵn sàng");
         }
 
-        knnClassifier.addImage(webcamElement, label);
+        const activation = featureExtractor.infer(webcamElement);
+        knnClassifier.addExample(activation, label);
         console.log(`Đã thêm dữ liệu cho nhãn: ${label}`);
     } catch (error) {
         console.error("Lỗi khi thêm dữ liệu:", error);
@@ -70,7 +76,8 @@ async function addExample(label) {
 async function startPredictionLoop() {
     while (true) {
         if (knnClassifier.getNumClasses() > 0) {
-            knnClassifier.classify(webcamElement, (error, result) => {
+            const activation = featureExtractor.infer(webcamElement);
+            knnClassifier.classify(activation, (error, result) => {
                 if (error) {
                     console.error(error);
                     return;
