@@ -52,6 +52,10 @@ async function init() {
 // Hàm thêm dữ liệu huấn luyện cho từng nhãn
 async function addExample(label) {
     try {
+        if (!webcamElement) {
+            throw new Error("Webcam chưa sẵn sàng");
+        }
+        
         const activation = net.infer(webcamElement, true);
         knnClassifier.addExample(activation, label);
         console.log(`Đã thêm dữ liệu cho nhãn: ${label}`);
