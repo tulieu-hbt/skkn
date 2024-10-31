@@ -50,9 +50,8 @@ async function init() {
     // Lấy các element HTML
     document.getElementById("startButton").addEventListener("click", start);
     labelContainer = document.getElementById("label-container");
-    for (let i = 0; i < maxPredictions; i++) { 
+    for (let i = 0; i < 5 ; i++) { 
       labelContainer.appendChild(document.createElement("div"));   
-
     }
     console.log("Khởi tạo webcam:", webcam);
   } catch (error) {
