@@ -63,7 +63,7 @@ async function startPredictionLoop() {
         Nhãn dự đoán: ${result.label} với độ chính xác: ${(result.confidencesByLabel[result.label] * 100).toFixed(2)}%
       `;
     }
-    await tf.nextFrame();
+    await new Promise((resolve) => setTimeout(resolve, 100)); // Đợi một thời gian ngắn trước khi lặp lại
   }
 }
 
