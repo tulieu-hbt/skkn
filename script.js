@@ -2,41 +2,53 @@ let net, knnClassifier, webcamElement;
 
 // Hàm khởi tạo ứng dụng
 async function init() {
-    console.log("Bắt đầu khởi tạo mô hình...");
+    try {
+        console.log("Bắt đầu khởi tạo mô hình...");
 
-    // Tải mô hình MobileNet
-    net = await mobilenet.load();
-    console.log("Đã tải xong MobileNet.");
+        // Tải mô hình MobileNet
+        net = await mobilenet.load();
+        console.log("Đã tải xong MobileNet.");
 
-    // Tạo KNN Classifier
-    knnClassifier = ml5.KNNClassifier();
-    console.log("Đã tạo KNN Classifier.");
+        // Tạo KNN Classifier
+        knnClassifier = ml5.KNNClassifier();
+        console.log("Đã tạo KNN Classifier.");
 
-    // Khởi tạo webcam
-    webcamElement = document.createElement("video");
-    webcamElement.setAttribute("autoplay", "");
-    webcamElement.setAttribute("playsinline", "");
-    webcamElement.setAttribute("width", 640);
-    webcamElement.setAttribute("height", 480);
-    document.getElementById("webcam-container").appendChild(webcamElement);
+        // Khởi tạo webcam
+        webcamElement = document.createElement("video");
+        webcamElement.setAttribute("autoplay", "");
+        webcamElement.setAttribute("playsinline", "");
+        webcamElement.setAttribute("width", 640);
+        webcamElement.setAttribute("height", 480);
+        document.getElementById("webcam-container").appendChild(webcamElement);
 
-    // Khởi chạy webcam
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        webcamElement.srcObject = stream;
-        await new Promise((resolve) => (webcamElement.onloadedmetadata = resolve));
-        console.log("Webcam đã sẵn sàng.");
-    } else {
-        alert("Trình duyệt không hỗ trợ webcam");
-        return;
+        // Khởi chạy webcam
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            webcamElement.srcObject = stream;
+            await new Promise((resolve) => {
+                webcamElement.onloadedmetadata = () => {
+                    webcamElement.play();
+                    resolve();
+                };
+            });
+            console.log("Webcam đã sẵn sàng.");
+        } else {
+            throw new Error("Trình duyệt không hỗ trợ webcam");
+        }
+    } catch (error) {
+        console.error("Lỗi khi khởi tạo ứng dụng:", error);
+        alert("Đã xảy ra lỗi khi khởi tạo ứng dụng: " + error.message);
     }
 }
 
 // Hàm thêm dữ liệu huấn luyện cho từng nhãn
 async function addExample(label) {
     try {
-        if (!webcamElement || !net || !knnClassifier) {
-            throw new Error("Webcam hoặc mô hình chưa sẵn sàng");
+        if (!webcamElement || webcamElement.readyState !== 4) {
+            throw new Error("Webcam chưa sẵn sàng");
+        }
+        if (!net || !knnClassifier) {
+            throw new Error("Mô hình hoặc KNN Classifier chưa sẵn sàng");
         }
 
         // Tạo ra một activation từ mô hình MobileNet dựa trên khung hình từ webcam
