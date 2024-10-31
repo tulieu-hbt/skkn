@@ -1,14 +1,26 @@
 let featureExtractor, knnClassifier, webcamElement;
 
+// Hàm chờ cho ml5.js sẵn sàng
+function waitForMl5() {
+    return new Promise((resolve, reject) => {
+        const checkMl5 = () => {
+            if (typeof ml5 !== 'undefined') {
+                resolve();
+            } else {
+                setTimeout(checkMl5, 100);
+            }
+        };
+        checkMl5();
+    });
+}
+
 // Hàm khởi tạo ứng dụng
 async function init() {
     try {
-        console.log("Khởi tạo TensorFlow và các thành phần...");
+        console.log("Chờ ml5 sẵn sàng...");
+        await waitForMl5();  // Chờ cho đến khi ml5 được tải
 
-        // Đảm bảo thư viện ml5 đã sẵn sàng
-        if (typeof ml5 === 'undefined') {
-            throw new Error("ml5 library is not loaded. Please make sure to include the ml5.js library in your HTML.");
-        }
+        console.log("Khởi tạo TensorFlow và các thành phần...");
 
         // Thiết lập backend TensorFlow và đảm bảo sẵn sàng
         await tf.setBackend('webgl');
@@ -19,7 +31,7 @@ async function init() {
         featureExtractor = ml5.featureExtractor('MobileNet', () => {
             console.log("MobileNet đã được tải thành công.");
         });
-        knnClassifier = featureExtractor.classification();
+        knnClassifier = ml5.KNNClassifier(); // Tạo KNN Classifier mới
 
         // Khởi tạo webcam
         webcamElement = document.createElement("video");
