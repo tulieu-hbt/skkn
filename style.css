@@ -3,22 +3,44 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  background-color: #f0f0f0;
 }
 
-video {
-  margin-top: 20px;
-}
-
-#label-container {
-  margin-top: 20px;
-  font-size: 20px;
+h1 {
+  color: #333;
 }
 
 #startButton {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
   color: white;
   border: none;
-  cursor: pointer;
+  border-radius: 5px;
+  cursor: pointer;   
+
+}
+
+/* Hiển thị webcam */
+#webcam {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  display: block; /* Webcam sẽ hiển thị khi được kích hoạt */
+}
+
+#label-container {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#label-container div {
+  margin: 5px;
+  padding: 5px 10px;
+  background-color: #eee;
+  border-radius: 5px;   
+
 }
