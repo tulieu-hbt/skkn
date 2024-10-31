@@ -4,21 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phân loại nông sản</title>
+    <!-- Liên kết đến CSS -->
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ml5"></script>
+    <!-- Thư viện TensorFlow.js và ml5.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.9.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ml5/0.6.0/ml5.min.js"></script>
 </head>
 <body>
-    <div id="container">
-        <h1>Phân loại nông sản</h1>
-        <div id="webcam-container"></div>
-        <div id="label-container"></div>
-        <button id="startButton">Bắt đầu</button>
+    <button id="startButton">Bắt đầu</button>
+    <div id="webcam-container"></div>
+    <div id="label-container">Kết quả sẽ hiển thị tại đây</div>
+    <div id="button-container">
         <button id="btn-apple">Thêm Táo</button>
         <button id="btn-banana">Thêm Chuối</button>
         <button id="btn-orange">Thêm Cam</button>
     </div>
+    <!-- Liên kết đến JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
