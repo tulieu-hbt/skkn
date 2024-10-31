@@ -1,46 +1,72 @@
+/* Thiết lập toàn bộ trang */
 body {
-  font-family: sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
   margin: 0;
-  background-color: #f0f0f0;
+  padding: 20px;
 }
 
-h1 {
-  color: #333;
-}
-
+/* Nút bắt đầu */
 #startButton {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #4CAF50;
+  font-weight: bold;
   color: white;
+  background-color: #4CAF50;
   border: none;
   border-radius: 5px;
-  cursor: pointer;   
-
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s;
 }
 
-/* Hiển thị webcam */
-#webcam {
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  display: block; /* Webcam sẽ hiển thị khi được kích hoạt */
+#startButton:hover {
+  background-color: #45a049;
 }
 
-#label-container {
-  margin-top: 20px;
+/* Phần chứa video webcam */
+#webcam-container {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+  background-color: #333;
+  padding: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
 }
 
-#label-container div {
-  margin: 5px;
-  padding: 5px 10px;
-  background-color: #eee;
-  border-radius: 5px;   
+/* Thiết lập video webcam */
+video {
+  border-radius: 10px;
+  width: 100%;
+  height: auto;
+  max-width: 640px;
+  max-height: 480px;
+}
 
+/* Phần chứa nhãn kết quả */
+#label-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 640px;
+  text-align: center;
+}
+
+/* Định dạng mỗi dòng dự đoán */
+#label-container div {
+  font-size: 18px;
+  color: #333;
+  background-color: #e0e0e0;
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 600px;
 }
