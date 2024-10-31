@@ -1,6 +1,6 @@
 let model, webcam, labelContainer;
 
-// Hàm khởi tạo
+// Hàm khởi tạo (Chỉ tải mô hình trước, chưa bật webcam)
 async function init() {
     try {
         console.log("Bắt đầu khởi tạo ứng dụng...");
@@ -14,26 +14,6 @@ async function init() {
         model = await mobilenet.load();
         console.log("Mô hình MobileNet đã được tải.");
 
-        // Khởi tạo webcam
-        console.log("Đang khởi tạo webcam...");
-        webcam = document.createElement("video");
-        webcam.setAttribute("autoplay", "");
-        webcam.setAttribute("playsinline", "");
-        webcam.setAttribute("width", 640);
-        webcam.setAttribute("height", 480);
-        document.getElementById("webcam-container").appendChild(webcam);
-
-        // Yêu cầu truy cập webcam
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            webcam.srcObject = stream;
-            await new Promise((resolve) => (webcam.onloadedmetadata = resolve));
-            console.log("Webcam đã sẵn sàng.");
-        } else {
-            alert("Trình duyệt không hỗ trợ webcam");
-            return;
-        }
-
         // Tạo container để hiển thị nhãn dự đoán
         labelContainer = document.getElementById("label-container");
         console.log("Ứng dụng đã được khởi tạo thành công.");
@@ -43,15 +23,36 @@ async function init() {
     }
 }
 
-// Hàm bắt đầu nhận dạng
-function start() {
+// Khởi động webcam và nhận dạng khi nhấn nút "Bắt đầu"
+async function start() {
     try {
-        console.log("Bắt đầu nhận dạng...");
-        document.getElementById("startButton").style.display = "none";
-        loop();
+        console.log("Bắt đầu khởi động webcam...");
+
+        // Khởi tạo webcam
+        webcam = document.createElement("video");
+        webcam.setAttribute("autoplay", "");
+        webcam.setAttribute("playsinline", "");
+        webcam.setAttribute("width", 320); // Kích thước nhỏ hơn
+        webcam.setAttribute("height", 240);
+        document.getElementById("webcam-container").appendChild(webcam);
+        document.getElementById("webcam-container").classList.remove("hidden");
+
+        // Yêu cầu truy cập webcam
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            webcam.srcObject = stream;
+            await new Promise((resolve) => (webcam.onloadedmetadata = resolve));
+            console.log("Webcam đã sẵn sàng.");
+
+            // Bắt đầu vòng lặp nhận dạng
+            loop();
+        } else {
+            alert("Trình duyệt không hỗ trợ webcam");
+            return;
+        }
     } catch (error) {
-        console.error("Lỗi khi bắt đầu nhận dạng:", error);
-        alert("Đã xảy ra lỗi khi bắt đầu nhận dạng: " + error.message);
+        console.error("Lỗi khi khởi động webcam:", error);
+        alert("Đã xảy ra lỗi khi khởi động webcam: " + error.message);
     }
 }
 
