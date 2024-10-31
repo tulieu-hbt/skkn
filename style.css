@@ -1,46 +1,26 @@
 body {
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     height: 100vh;
     margin: 0;
-    flex-direction: column;
-    background-color: #f0f0f0; /* Màu nền nhẹ */
+    background-color: #f0f0f0;
 }
 
-h1 {
+#container {
     text-align: center;
 }
 
-#startButton {
-    background-color: #007BFF;
-    color: white;
-    font-size: 16px;
+video {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+button {
+    margin: 5px;
     padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
+    font-size: 16px;
     cursor: pointer;
-}
-
-#startButton:hover {
-    background-color: #0056b3;
-}
-
-#webcam-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    width: 320px;
-    height: 240px;
-    overflow: hidden; /* Giúp phần camera không lấn ra ngoài */
-}
-
-#label-container {
-    margin-top: 20px;
-}
-
-#label-container div {
-    margin-top: 5px;
-    font-size: 18px;
-    text-align: center;
 }
