@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="description" content="Ứng dụng web phân loại nông sản bằng Teachable Machine và TensorFlow.js">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phân biệt nông sản</title>
- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.14.0"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0"></script>   
- 
+  <title>Kiểm tra MobileNet</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.14.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0"></script>   
 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/teachablemachine@latest"></script>   
+  <script>
+    async function loadModel() {
+      try {
+        const model = await mobilenet.load();
+        console.log("Mô hình đã được tải:", model);
+        const totalClasses = model.getTotalClasses();
+        console.log("Số lượng classes:", totalClasses);
+      } catch (error) {
+        console.error("Lỗi khi tải mô hình:", error);
+      }
+    }
 
-  <link rel="stylesheet" href="style.css">
+    loadModel(); // Gọi hàm để tải mô hình
+  </script>
 </head>
 <body>
-  <h1>Phân biệt nông sản</h1>
-  <button id="startButton">Bắt đầu</button>
-  <video id="webcam" autoplay width="640" height="480" style="display: none;"></video>
-  <div id="label-container"></div>
-  <script src="script.js"></script>
 </body>
 </html>
