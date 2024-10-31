@@ -3,11 +3,15 @@ let net, knnClassifier, webcamElement;
 // Hàm khởi tạo ứng dụng
 async function init() {
   try {
-    console.log("Bắt đầu khởi tạo mô hình...");
+    console.log("Khởi tạo TensorFlow và các thành phần...");
+
+    // Đảm bảo TensorFlow.js đã sẵn sàng
+    await tf.ready();
+    console.log("TensorFlow.js đã sẵn sàng.");
 
     // Tải mô hình MobileNet
     net = await mobilenet.load();
-    console.log("Đã tải xong MobileNet.");
+    console.log("MobileNet đã được tải thành công.");
 
     // Tạo KNN Classifier
     knnClassifier = ml5.KNNClassifier();
@@ -31,10 +35,10 @@ async function init() {
       return;
     }
 
-    // Bắt đầu nhận diện sau khi khởi tạo thành công
+    // Bắt đầu vòng lặp dự đoán sau khi khởi tạo thành công
     startPredictionLoop();
   } catch (error) {
-    console.error("Lỗi khi khởi tạo:", error);
+    console.error("Lỗi khi khởi tạo ứng dụng:", error);
     alert("Lỗi khi khởi tạo ứng dụng: " + error.message);
   }
 }
