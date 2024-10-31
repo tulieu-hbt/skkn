@@ -5,6 +5,11 @@ body {
     height: 100vh;
     margin: 0;
     flex-direction: column;
+    background-color: #f0f0f0; /* Màu nền nhẹ */
+}
+
+h1 {
+    text-align: center;
 }
 
 #startButton {
@@ -27,6 +32,11 @@ body {
     margin-top: 20px;
     width: 320px;
     height: 240px;
+    overflow: hidden; /* Giúp phần camera không lấn ra ngoài */
+}
+
+#label-container {
+    margin-top: 20px;
 }
 
 #label-container div {
