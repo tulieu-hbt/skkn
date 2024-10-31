@@ -5,9 +5,9 @@ async function init() {
   try {
     console.log("Khởi tạo TensorFlow và các thành phần...");
 
-    // Buộc sử dụng backend 'webgl' thay vì 'webgpu'
+    // Buộc sử dụng backend 'webgl' và chờ cho backend được thiết lập hoàn toàn
     await tf.setBackend('webgl');
-    await tf.ready();
+    await tf.ready();  // Đảm bảo toàn bộ TensorFlow.js đã sẵn sàng
     console.log("Backend 'webgl' đã sẵn sàng và TensorFlow.js đã sẵn sàng.");
 
     // Tải mô hình MobileNet
