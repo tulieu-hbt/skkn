@@ -72,6 +72,7 @@ async function start() {
 
     // Bắt đầu nhận dạng và hiển thị kết quả
     loop();
+    console.log("Bắt đầu nhận dạng");
   } catch (error) {
     console.error("Lỗi khi bắt đầu nhận dạng:", error);
     alert("Đã xảy ra lỗi khi bắt đầu nhận dạng. Vui lòng kiểm tra webcam và thử lại.");
@@ -122,7 +123,7 @@ async function predict() {
         labelContainer.appendChild(div);
       }
     }
-
+     console.log("Kết quả dự đoán:", prediction);
   } catch (error) {
     console.error("Lỗi khi nhận dạng:", error);
     alert("Đã xảy ra lỗi khi nhận dạng. Vui lòng thử lại.");
